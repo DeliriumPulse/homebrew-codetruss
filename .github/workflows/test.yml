@@ -1,0 +1,54 @@
+name: Homebrew tap
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: homebrew-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  formula:
+    name: Formula / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+    env:
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_REQUIRE_TAP_TRUST: "1"
+    steps:
+      - name: Check out the tap
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Update Homebrew
+        run: brew update
+
+      - name: Tap this checkout and trust only CodeTruss
+        run: |
+          brew tap DeliriumPulse/codetruss "$GITHUB_WORKSPACE"
+          brew trust --formula DeliriumPulse/codetruss/codetruss
+
+      - name: Check formula style and metadata
+        run: |
+          brew style DeliriumPulse/codetruss/codetruss
+          brew audit --strict --online --formula DeliriumPulse/codetruss/codetruss
+
+      - name: Install and test the exact release archive
+        run: |
+          brew install --build-from-source DeliriumPulse/codetruss/codetruss
+          brew test DeliriumPulse/codetruss/codetruss
+          test "$(codetruss --version)" = "codetruss 0.2.14"
