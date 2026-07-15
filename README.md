@@ -23,19 +23,22 @@ brew upgrade codetruss
 brew uninstall codetruss
 ```
 
-Then initialize a Git repository and install the hook for your coding agent:
+At the Git root, run the guided setup once:
 
 ```sh
 cd /path/to/repository
-codetruss init --allow "src/**" --deny ".github/**"
-codetruss hooks install codex    # or claude, pre-commit, or all
-codetruss hooks doctor codex
+codetruss setup
 ```
 
-Run a review directly:
+`setup` proposes a narrow scope, detects the repository's existing verification
+commands, shows their exact fingerprint before trust, installs the hooks you
+select, and runs diagnostics. After that, keep using your coding agent normally.
+
+To review an existing change directly:
 
 ```sh
-codetruss review --task "Add account export" --allow "src/**" --verify "npm test"
+codetruss review --task "Review my current agent changes"
+codetruss verify latest
 ```
 
 Deterministic analysis and receipts stay on your machine. `--llm` is opt-in and
@@ -65,4 +68,3 @@ The tap license does not relicense the CLI. See [NOTICE.md](NOTICE.md).
 - Installation or formula issue: [open a tap issue](https://github.com/DeliriumPulse/homebrew-codetruss/issues)
 - CLI issue: [open a CLI issue](https://github.com/DeliriumPulse/codetruss-cli/issues)
 - Security report: follow the private reporting instructions in [SECURITY.md](SECURITY.md)
-
