@@ -1,8 +1,8 @@
 class Codetruss < Formula
   desc "Local-first acceptance gate and receipts for AI-generated code"
   homepage "https://codetruss.com/cli"
-  url "https://github.com/DeliriumPulse/codetruss-cli/releases/download/v0.2.14/codetruss-cli-0.2.14.tgz"
-  sha256 "7fd85c939a3224c0678f6541b52ba4dd7e40b68a8dfaffd5bd6c8e0c12425da1"
+  url "https://github.com/DeliriumPulse/codetruss-cli/releases/download/v0.2.24/codetruss-cli-0.2.24.tgz"
+  sha256 "793895784552e5d59540ffcc9dc2acf6bff6f778b59f9010bd901e4d4c3fa712"
   license :cannot_represent
 
   depends_on "node"
